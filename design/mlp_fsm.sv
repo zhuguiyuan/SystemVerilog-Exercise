@@ -14,14 +14,14 @@ module mlp_fsm (
     output logic        x_ren_o,
     output logic        x_wen_o,
     output logic        x_sel_o,
-    output logic [ 7:0] x_addr_o,
+    output logic [ 7:0] x_addr_o
 );
 
     // layer counter from 0 to 7
     logic       cnt_layer_inc;
     logic       cnt_layer_clr;
     logic [2:0] cnt_layer_value;
-    logic       cnt_layer_will_overflow
+    logic       cnt_layer_will_overflow;
     counter #(.Limit(8)) cnt_layer (
         .clk_i           (clk_i),
         .rst_ni          (rst_ni),
@@ -35,7 +35,7 @@ module mlp_fsm (
     logic       cnt_16_inc;
     logic       cnt_16_clr;
     logic [3:0] cnt_16_value;
-    logic       cnt_16_will_overflow
+    logic       cnt_16_will_overflow;
     counter #(.Limit(16)) cnt_16 (
         .clk_i           (clk_i),
         .rst_ni          (rst_ni),
@@ -49,7 +49,7 @@ module mlp_fsm (
     logic       cnt_mut_inc;
     logic       cnt_mut_clr;
     logic [7:0] cnt_mut_value;
-    logic       cnt_mut_will_overflow
+    logic       cnt_mut_will_overflow;
     counter #(.Limit(16*16)) cnt_mut (
         .clk_i           (clk_i),
         .rst_ni          (rst_ni),
