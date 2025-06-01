@@ -107,6 +107,7 @@ module mlp_fsm (
             end
             StoreX: begin
                 if (cnt_mut_will_overflow) begin
+                    state_next = Idle;
                 end
             end
         endcase
