@@ -1,5 +1,7 @@
 module mlp (
     input  logic        clk_i,
+    input  logic        rst_ni,
+
     input  logic        start_valid_i,
     output logic        start_ready_o,
     input  logic        init_valid_i,
