@@ -59,7 +59,7 @@ module mlp_fsm (
         .will_overflow_o (cnt_mut_will_overflow)
     );
 
-    typedef enum logic [4:0] {Idle, InitW, LoadX, Rd, Acc, Wb, StoreX} state_t;
+    typedef enum logic [4:0] {Idle, InitW, LoadX, Rd, Acc, Wb, StoreX0, StoreX} state_t;
 
     state_t state_reg, state_next;
 
@@ -93,23 +93,27 @@ module mlp_fsm (
                 end
             end
             Rd: begin
+                state_next = Acc;
+            end
+            Acc: begin
+                state_next = Rd;
                 if (cnt_16_will_overflow) begin
                     state_next = Wb;
                 end
             end
-            Acc: begin
-                state_next = Rd;
-            end
             Wb: begin
                 if (cnt_layer_will_overflow
                    && cnt_mut_will_overflow) begin
-                    state_next = StoreX;
+                    state_next = StoreX0;
                 end else begin
                     state_next = Rd;
                 end
             end
+            StoreX0: begin
+                state_next = StoreX;
+            end
             StoreX: begin
-                if (cnt_mut_will_overflow) begin
+                if (cnt_mut_value == 0) begin
                     state_next = Idle;
                 end
             end
@@ -120,7 +124,7 @@ module mlp_fsm (
     assign start_ready_o = state_reg == Idle;
     assign result_valid_o = state_reg == StoreX;
 
-    always_comb begin: w
+    always_comb begin: w_related
         w_addr_o = 0;
         w_ren_o = 0;
         w_wen_o = 0;
@@ -136,7 +140,7 @@ module mlp_fsm (
         endcase
     end
 
-    always_comb begin: x
+    always_comb begin: x_related
         x_addr_o = 0;
         x_ren_o = 0;
         x_wen_o = 0;
@@ -147,16 +151,23 @@ module mlp_fsm (
                 x_wen_o = 1;
             end
             Rd: begin
-                x_addr_o = {cnt_mut_value[7:4], cnt_16_value};
+                x_addr_o = {cnt_16_value, cnt_mut_value[7:4]};
                 x_ren_o = 1;
+                x_sel_o = cnt_layer_value[0];
             end
             Wb: begin
+                x_addr_o = cnt_mut_value;
                 x_wen_o = 1;
+                x_sel_o = cnt_layer_value[0];
+            end
+            StoreX0, StoreX: begin
+                x_addr_o = cnt_mut_value;
+                x_ren_o = 1;
             end
         endcase
     end
 
-    always_comb begin: counter
+    always_comb begin: counter_related
         cnt_layer_inc = 0;
         cnt_mut_inc = 0;
         cnt_16_inc = 0;
@@ -175,6 +186,18 @@ module mlp_fsm (
                     cnt_layer_inc = 1;
             end
             LoadX: begin
+                cnt_mut_inc = 1;
+            end
+            Acc: begin
+                cnt_16_inc = 1;
+            end
+            Wb: begin
+                cnt_mut_inc = 1;
+                if (cnt_mut_will_overflow) begin
+                    cnt_layer_inc = 1;
+                end
+            end
+            StoreX0, StoreX: begin
                 cnt_mut_inc = 1;
             end
         endcase

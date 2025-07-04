@@ -34,13 +34,12 @@ module tb_top ();
         start_valid_i <= 0;
         @(posedge clk_i) wait (start_ready_o);
         repeat(10) @(posedge clk_i);
+        $finish();
     end
 
     initial begin
         $dumpfile("demo.vcd");
         $dumpvars();
-        repeat(10000) @(posedge clk_i);
-        $finish();
     end
 
 endmodule
