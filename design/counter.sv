@@ -9,7 +9,8 @@ module counter #(
     output logic [Width-1:0] value_o,
     output logic             will_overflow_o
 );
-    logic [Width:0] value_reg, value_next, value_inc;
+    logic [Width-1:0] value_reg, value_next;
+    logic [Width:0] value_inc;
 
     always_ff @(posedge clk_i) begin
         if (!rst_ni) begin
@@ -22,6 +23,7 @@ module counter #(
     assign value_inc = value_reg + 1;
 
     always_comb begin
+        value_next = value_reg;
         if (clr_i) begin
             value_next = '0;
         end else if (inc_i) begin
@@ -34,5 +36,6 @@ module counter #(
     end
 
     assign will_overflow_o = value_inc == Limit;
+    assign value_o = value_reg;
 
 endmodule

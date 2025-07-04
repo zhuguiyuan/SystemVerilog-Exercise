@@ -10,8 +10,8 @@ module mul_add_16q9_acc16 (
     // round the decimal part
     logic signed carry_bit;
     assign carry_bit = y_ori_o[35] == 1'b1
-                       ? y_ori_o[8];                    // positive
-                       : (y_ori_o[8] & (|y_ori_o[7:0])) // negative
+                       ? y_ori_o[8]                      // positive
+                       : (y_ori_o[8] & (|y_ori_o[7:0])); // negative
 
     // 24 bits = 1 bits + 7 bits + 7bits + 9 bits
     logic signed [23:0] y_rnd;
