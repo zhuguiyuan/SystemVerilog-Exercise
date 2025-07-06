@@ -30,12 +30,12 @@ module counter #(
             if (will_overflow_o) begin
                 value_next = '0;
             end else begin
-                value_next = value_inc;
+                value_next = Width'(value_inc);
             end
         end
     end
 
-    assign will_overflow_o = value_inc == Limit;
+    assign will_overflow_o = value_inc == (Width+1)'(Limit);
     assign value_o = value_reg;
 
 endmodule

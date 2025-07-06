@@ -64,7 +64,7 @@ module mlp_fsm (
         .will_overflow_o (cnt_mut_will_overflow)
     );
 
-    typedef enum logic [4:0] {Idle, InitW, LoadX, Rd, Acc, Wb, StoreX0, StoreX} state_t;
+    typedef enum logic [2:0] {Idle, InitW, LoadX, Rd, Acc, Wb, StoreX0, StoreX} state_t;
 
     state_t state_reg, state_next;
 
@@ -133,6 +133,7 @@ module mlp_fsm (
         w_addr_o = 0;
         w_ren_o = 0;
         w_wen_o = 0;
+        // verilator lint_off CASEINCOMPLETE
         case (state_reg)
             InitW: begin
                 w_addr_o = {cnt_layer_value, cnt_mut_value};
@@ -143,6 +144,7 @@ module mlp_fsm (
                 w_ren_o = 1;
             end
         endcase
+        // verilator lint_on CASEINCOMPLETE
     end
 
     always_comb begin: x_related
@@ -150,6 +152,7 @@ module mlp_fsm (
         x_ren_o = 0;
         x_wen_o = 0;
         x_sel_o = 0;
+        // verilator lint_off CASEINCOMPLETE
         case (state_reg)
             LoadX: begin
                 x_addr_o = cnt_mut_value;
@@ -170,6 +173,7 @@ module mlp_fsm (
                 x_ren_o = 1;
             end
         endcase
+        // verilator lint_on CASEINCOMPLETE
     end
 
     always_comb begin: counter_related
@@ -179,6 +183,7 @@ module mlp_fsm (
         cnt_layer_clr = 0;
         cnt_mut_clr = 0;
         cnt_16_clr = 0;
+        // verilator lint_off CASEINCOMPLETE
         case (state_reg)
             Idle: begin
                 cnt_layer_clr = 1;
@@ -206,6 +211,7 @@ module mlp_fsm (
                 cnt_mut_inc = 1;
             end
         endcase
+        // verilator lint_on CASEINCOMPLETE
     end
 
     always_comb begin: datapath_related

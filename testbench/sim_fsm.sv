@@ -18,9 +18,9 @@ module sim_fsm ();
 
     mlp_fsm fsm(.*);
 
-    initial begin clk_i <= 0; forever #5 clk_i = ~clk_i; end
+    initial begin clk_i = 0; forever #1 clk_i = ~clk_i; end
 
-    initial begin
+    always begin
         rst_ni <= 0;
         start_valid_i <=0;
         init_valid_i <= 0;
