@@ -46,8 +46,10 @@ module sim_top ();
         end
         wait(result_valid_o);
         for (int i = 0; i < 256; ++i) begin
+            // saddly verilator does't support NBA to array in for loop
+            // but it's ok to sample the value before posedge of clk_i with BA
             @(posedge clk_i)
-            real_outputs[i] <= result_payload_o;
+            real_outputs[i] = result_payload_o;
         end
         @(posedge clk_i);
         $display("Checking Results");
