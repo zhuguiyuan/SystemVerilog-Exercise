@@ -53,7 +53,7 @@ module mlp (
     );
 
     always_ff @(posedge clk_i) begin
-        if (rst_ni | x_sram_write_back) begin
+        if (!rst_ni | x_sram_write_back) begin
             partial_sum_reg <= '0;
             complete_sum_reg <= '0;
         end else if (partial_sum_store) begin

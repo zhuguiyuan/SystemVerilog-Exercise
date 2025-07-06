@@ -14,12 +14,12 @@ module sramSpw2048d16 (
   assign INNER_SEL = ADR[10];
 
   sramSpw1024d16 u0 (
-    .Q   	(Q0            ),
-    .ADR 	(INNER_ADR     ),
-    .D   	(D             ),
-    .WE  	(WE & INNER_SEL),
-    .ME  	(ME & INNER_SEL),
-    .clk 	(clk           )
+    .Q   	(Q0             ),
+    .ADR 	(INNER_ADR      ),
+    .D   	(D              ),
+    .WE  	(WE & ~INNER_SEL),
+    .ME  	(ME & ~INNER_SEL),
+    .clk 	(clk            )
   );
 
   sramSpw1024d16 u1 (
@@ -31,6 +31,11 @@ module sramSpw2048d16 (
     .clk 	(clk           )
   );
 
-  assign Q = INNER_SEL == 1'b0 ? Q0 : Q1;
+  logic sel_reg;
+  always_ff @(posedge clk) begin
+    if (ME) sel_reg <= INNER_SEL;
+  end
+
+  assign Q = sel_reg == 1'b0 ? Q0 : Q1;
 
 endmodule

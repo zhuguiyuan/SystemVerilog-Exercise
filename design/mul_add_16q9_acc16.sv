@@ -10,7 +10,7 @@ module mul_add_16q9_acc16 (
     assign y_ori_o = a_i * x_i + b_i;
 
     // round the decimal part
-    logic signed carry_bit;
+    logic carry_bit;
     assign carry_bit = y_ori_o[35] == 1'b1
                        ? y_ori_o[8]                      // positive
                        : (y_ori_o[8] & (|y_ori_o[7:0])); // negative
@@ -22,9 +22,9 @@ module mul_add_16q9_acc16 (
     // saturation the integer part
     localparam bit signed [15:0] max_value = {1'b0, {15{1'b1}}};
     localparam bit signed [15:0] min_value = {1'b1, {15{1'b0}}};
-    assign y_sat_o = y_rnd[27] == 1'b0 && (|y_rnd[26:16]) == 1'b1
+    assign y_sat_o = y_rnd[27] == 1'b0 && (|y_rnd[26:15]) == 1'b1
                      ? max_value
-                     : y_rnd[27] == 1'b1 && (&y_rnd[26:16]) == 1'b0
+                     : y_rnd[27] == 1'b1 && (&y_rnd[26:15]) == 1'b0
                      ? min_value
                      : y_rnd[15:0];
 

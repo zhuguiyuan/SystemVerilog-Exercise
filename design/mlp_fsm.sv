@@ -157,6 +157,7 @@ module mlp_fsm (
             LoadX: begin
                 x_addr_o = cnt_mut_value;
                 x_wen_o = 1;
+                x_sel_o = 0;
             end
             Rd: begin
                 x_addr_o = {cnt_16_value, cnt_mut_value[7:4]};
@@ -164,9 +165,9 @@ module mlp_fsm (
                 x_sel_o = cnt_layer_value[0];
             end
             Wb: begin
-                x_addr_o = cnt_mut_value;
+                x_addr_o = {cnt_mut_value[3:0], cnt_mut_value[7:4]};
                 x_wen_o = 1;
-                x_sel_o = cnt_layer_value[0];
+                x_sel_o = ~cnt_layer_value[0];
             end
             StoreX0, StoreX: begin
                 x_addr_o = cnt_mut_value;
