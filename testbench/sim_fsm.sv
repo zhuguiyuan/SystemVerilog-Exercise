@@ -1,4 +1,4 @@
-module tb_top ();
+module sim_fsm ();
     logic        clk_i;
     logic        rst_ni;
     logic        start_valid_i;
