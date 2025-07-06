@@ -1,6 +1,6 @@
 module counter #(
-    parameter  int  Limit = 16,
-    localparam byte Width = $clog2(Limit)
+    parameter  int Limit = 16,
+    localparam int Width = $clog2(Limit)
 ) (
     input  logic             clk_i,
     input  logic             rst_ni,
