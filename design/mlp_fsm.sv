@@ -14,7 +14,12 @@ module mlp_fsm (
     output logic        x_ren_o,
     output logic        x_wen_o,
     output logic        x_sel_o,
-    output logic [ 7:0] x_addr_o
+    output logic [ 7:0] x_addr_o,
+
+    // when to store the partial sum result
+    output logic        partial_sum_store_o,
+    // 0 form load_payload, 1 from partial_sum
+    output logic        x_sram_write_back_o
 );
 
     // layer counter from 0 to 7
@@ -201,6 +206,20 @@ module mlp_fsm (
                 cnt_mut_inc = 1;
             end
         endcase
+    end
+
+    always_comb begin: datapath_related
+        if (state_reg == Acc)
+            partial_sum_store_o = 1;
+        else
+            partial_sum_store_o = 0;
+
+        if (state_reg == LoadX)
+            x_sram_write_back_o = 0;
+        else if (state_reg == Wb)
+            x_sram_write_back_o = 1;
+        else
+            x_sram_write_back_o = 0;
     end
 
 endmodule

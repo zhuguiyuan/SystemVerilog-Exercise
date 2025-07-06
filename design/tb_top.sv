@@ -13,6 +13,8 @@ module tb_top ();
     logic        x_wen_o;
     logic        x_sel_o;
     logic [ 7:0] x_addr_o;
+    logic        partial_sum_store_o;
+    logic        x_sram_write_back_o;
 
     mlp_fsm fsm(.*);
 
